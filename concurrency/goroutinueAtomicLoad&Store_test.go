@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"sync/atomic"
+	"testing"
 	"time"
 )
 
@@ -12,14 +13,20 @@ var (
 	isDone int64
 )
 
-func TestAtomicLoadAndStore() {
+/*
+*  使用atomic的Store和Load进行并发标记设置和读取
+ */
+func TestAtomicLoadAndStore(t *testing.T) {
 
 	wg2.Add(2)
 
-	doWork("A")
-	doWork("B")
+	go doWork("A")
+	go doWork("B")
 
+	time.Sleep(1 * time.Second)
+	atomic.StoreInt64(&isDone, 1)
 	wg2.Wait()
+
 }
 
 func doWork(name string) {
@@ -29,7 +36,7 @@ func doWork(name string) {
 		time.Sleep(250 * time.Millisecond)
 
 		if atomic.LoadInt64(&isDone) == 1 {
-			fmt.Printf("%s had finished", name)
+			fmt.Printf("%s had finished\n", name)
 			break
 		}
 	}

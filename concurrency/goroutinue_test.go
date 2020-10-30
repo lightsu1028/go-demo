@@ -11,7 +11,6 @@ func TestUsingGoroutinue(t*testing.T){
 	//设置运行时只有一个逻辑处理器给调度器使用
 	runtime.GOMAXPROCS(1)
 
-
 	var wg sync.WaitGroup
 	wg.Add(2)
 
